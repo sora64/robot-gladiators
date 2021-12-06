@@ -5,7 +5,7 @@
 // "LOSE" - Player robot's health is zero or less
 
 // Welcome players to Robot Gladiators
-//var welcome =window.alert("Welcome to Robot Gladiators!");
+var welcome = window.alert("Welcome to Robot Gladiators!");
 
 var playerName = window.prompt("What is your robot's name?");
 var playerHealth = 100;
@@ -19,7 +19,9 @@ var enemyAttack = 12;
 // create function
 var fight = function(enemyName) {
     // fight function statements
-    // Ask player if they want to fight or not
+    // repeat and execute as long as the enemy-robot is alive
+    while(enemyHealth > 0) {
+        // Ask player if they want to fight or not
     var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
 
     // if player chooses to fight, then fight
@@ -37,7 +39,7 @@ var fight = function(enemyName) {
             window.alert(enemyName+" still has "+enemyHealth+" health left.");
         }
 
-        //remove player's heathy by subtracting the amount set in the enemyAttack variable
+        //remove player's health by subtracting the amount set in the enemyAttack variable
         playerHealth = playerHealth - enemyAttack;
         console.log(
             enemyName+ " attacked " +playerName+". "+playerName+ " now has "+playerHealth+" health remaining."
@@ -73,8 +75,13 @@ var fight = function(enemyName) {
     } else {
         window.alert("You need to choose a valid option. Try again!");
     }
+    }
+    
 }
 
-for(var i = 0; i < enemyNames.length; i++) {
-    fight(enemyNames[i]);
+for (var i = 0; i < enemyNames.length; i++) {
+    var pickedEnemyName = enemyNames[i];
+    enemyHealth = 50
+    // call fight function with enemy-robot
+    fight(pickedEnemyName);
 }
