@@ -6,6 +6,10 @@
 // Wrap game logic in a startGame() function
 // When win or lose conditions are met, call and endGame() function that 1) tells the player their stats; 2) asks the player if they want to play again; and 3) recalls the startGame function if they selected yes
 // After the player skips or defeats an enemy, ask the player if they want to shop (yes or no; no makes the game continue; yes opens the shop menu, or shop() function, in which the player may refill their health and upgrade (both actions for a separate price) their attack, or leave the shop; if they leave, they're told goodbye and they exit the shop() function; if any other response is given, shop() is called again).
+// Use Objects to...
+// * Start enemies at a random health value between 40 and 60
+// * Start enemies with a random attack value between 10 and 14
+// * Make attack damage random, using the robot's attack value as an upper limit
 
 var playerName = window.prompt("What is your robot's name?");
 var playerHealth = 100;
@@ -31,7 +35,7 @@ var fight = function(enemyName) {
             if (confirmSkip) {
                 window.alert(playerName+ " has decided to skip the fight. Goodbye!");
                 //subtract money from playerMoney for skipping
-                playerMoney = playerMoney - 10;
+                playerMoney = Math.max(0, playerMoney - 10);
                 console.log("playerMoney", playerMoney);
                 // check player's money
                 if (playerMoney <= 0) {
@@ -46,7 +50,8 @@ var fight = function(enemyName) {
         // if player chooses to fight, then fight
         else if (promptFight === "fight" || promptFight === "FIGHT" || promptFight === "f") {
             //remove enemy's health by subtracting the amount set in the playerAttack variable
-            enemyHealth = enemyHealth - playerAttack;
+            var damage = randomNumber(playerAttack - 3, playerAttack);
+            enemyHealth = Math.max(0, enemyHealth - damage);
             console.log(
                 playerName+ " attacked " +enemyName+". " +enemyName+ " now has "+enemyHealth+" health remaining."
             );
@@ -54,13 +59,24 @@ var fight = function(enemyName) {
             //check enemy's health
             if (enemyHealth <= 0) {
             window.alert(enemyName+" has died!");
+            // add money if the player wins a round
+            var fightOutcome =function() {
+                var playerMoneyGain = randomNumber(5, 10)
+                playerMoney = playerMoney + playerMoneyGain;
+                console.log(
+                    playerName+" received "+playerMoneyGain+" dollars! "+playerName+" now has "+playerMoney+" dollars!"
+                );
+            };
+
+            fightOutcome();
             break;
             } else {
                 window.alert(enemyName+" still has "+enemyHealth+" health left.");
             }
 
             //remove player's health by subtracting the amount set in the enemyAttack variable
-            playerHealth = playerHealth - enemyAttack;
+            var damage = randomNumber(enemyAttack - 3, enemyAttack);
+            playerHealth = Math.max(0, playerHealth - damage);
             console.log(
                 enemyName+ " attacked " +playerName+". "+playerName+ " now has "+playerHealth+" health remaining."
             );
@@ -98,22 +114,14 @@ var startGame = function() {
             var pickedEnemyName = enemyNames[i];
 
             // reset enemyHealth before starting new fight
-            enemyHealth = 50
+            enemyHealth = randomNumber(40, 60);
 
             // pass the pickedEnemyName variable's value into the fight function, where it will assume the value of the enemyName parameter
             fight(pickedEnemyName);
 
             // if the player is still alive and we're not at the last enemy in the array
             if (playerHealth > 0 && i < enemyNames.length - 1) {
-                // add money if the player wins a round
-                var fightOutcome =function() {
-                    playerMoney = playerMoney + 7;
-                    console.log(
-                        playerName+" now has "+playerMoney+" dollars!"
-                    );
-                };
-                fightOutcome();
-
+                
                 // ask if player wants to use the store before next round
                 var storeConfirm = window.confirm("The fight is over; visit the store before the next round?");
 
@@ -199,6 +207,13 @@ var shop = function() {
         shop();
         break;
     }
+};
+
+// function to generate a random numeric value
+var randomNumber = function(min, max) {
+    var value = Math.floor(Math.random() * (max-min + 1) + min);
+
+    return value;
 };
 
 // start the game when the page loads
