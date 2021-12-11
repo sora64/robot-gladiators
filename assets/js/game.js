@@ -129,7 +129,7 @@ var startGame = function() {
 
             // pass the pickedenemy.name variable's value into the fight function, where it will assume the value of the enemy parameter
             fight(pickedEnemyObj);
-            debugger;
+
             // if the player is still alive and we're not at the last enemy in the array
             if (playerInfo.health > 0 && i < enemyInfo.length - 1) {
                 
